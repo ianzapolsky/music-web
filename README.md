@@ -15,10 +15,11 @@ A web-based tool for visualizing connections between musical artists and albums 
 ## Usage
 
 1. Place your markdown files in the `/data/` directory
-2. Open `index.html` in a web browser
-3. The graph will automatically load and display the relationships
-4. Use mouse to zoom, pan, and drag nodes
-5. The graph uses a force-directed layout that settles into a natural arrangement
+2. `cd /path/to/this/repo && python3 -m http.server 8000
+3. Open `index.html` in a web browser
+4. The graph will automatically load and display the relationships
+5. Use mouse to zoom, pan, and drag nodes
+6. The graph uses a force-directed layout that settles into a natural arrangement
 
 ## Markdown File Format
 
