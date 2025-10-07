@@ -211,18 +211,52 @@ async function initializeGraph() {
         });
     }
 
-    // Give nodes initial random positions to prevent overlapping
+    // Calculate maximum graph dimensions based on number of nodes
+    // Base dimensions with scaling factor for larger graphs
+    const baseWidth = 800;
+    const baseHeight = 600;
+    const nodeCount = data.nodes.length;
+    const scaleFactor = Math.max(1, Math.sqrt(nodeCount / 10)); // Scale up for more nodes
+    const maxGraphWidth = Math.min(baseWidth * scaleFactor, width * 0.9);
+    const maxGraphHeight = Math.min(baseHeight * scaleFactor, height * 0.9);
+    
+    console.log(`Graph bounds: ${maxGraphWidth}x${maxGraphHeight} (${nodeCount} nodes, scale: ${scaleFactor.toFixed(2)})`);
+
+    // Give nodes initial random positions within the calculated bounds
     data.nodes.forEach(node => {
-        node.x = Math.random() * width;
-        node.y = Math.random() * height;
+        node.x = Math.random() * maxGraphWidth;
+        node.y = Math.random() * maxGraphHeight;
     });
 
-    // Create force simulation with performance optimizations
+    // Create force simulation with performance optimizations and boundary constraints
     const simulation = d3.forceSimulation(data.nodes)
         .force('link', d3.forceLink(data.links).id(d => d.id).distance(100))
         .force('charge', d3.forceManyBody().strength(-300))
-        .force('center', d3.forceCenter(width / 2, height / 2))
+        .force('center', d3.forceCenter(maxGraphWidth / 2, maxGraphHeight / 2))
         .force('collision', d3.forceCollide().radius(30))
+        .force('boundary', () => {
+            // Custom force to keep nodes within calculated bounds
+            data.nodes.forEach(node => {
+                const padding = 20; // Keep some padding from edges
+                
+                // Left boundary
+                if (node.x < padding) {
+                    node.vx += (padding - node.x) * 0.1;
+                }
+                // Right boundary
+                if (node.x > maxGraphWidth - padding) {
+                    node.vx += (maxGraphWidth - padding - node.x) * 0.1;
+                }
+                // Top boundary
+                if (node.y < padding) {
+                    node.vy += (padding - node.y) * 0.1;
+                }
+                // Bottom boundary
+                if (node.y > maxGraphHeight - padding) {
+                    node.vy += (maxGraphHeight - padding - node.y) * 0.1;
+                }
+            });
+        })
         .alphaDecay(0.1) // Faster decay to settle quickly
         .velocityDecay(0.4) // Add some friction
         .alpha(0.5); // Start with higher energy
