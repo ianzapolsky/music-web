@@ -15,7 +15,7 @@ A web-based tool for visualizing connections between musical artists and albums 
 ## Usage
 
 1. Place your markdown files in the `/data/` directory
-2. Open `simple-music-graph.html` in a web browser
+2. Open `index.html` in a web browser
 3. The graph will automatically load and display the relationships
 4. Use mouse to zoom, pan, and drag nodes
 5. The graph uses a force-directed layout that settles into a natural arrangement
@@ -74,6 +74,7 @@ The `data/` directory contains sample markdown files demonstrating the format:
 ## Technical Details
 
 - Built with vanilla JavaScript and D3.js
+- Modular code structure with separate HTML, CSS, and JavaScript files
 - No build process required - just open in a browser
 - Responsive design that works on desktop and mobile
 - Force-directed graph layout with collision detection
@@ -88,7 +89,9 @@ The `data/` directory contains sample markdown files demonstrating the format:
 
 ```
 music-web/
-├── simple-music-graph.html # Main HTML file with embedded CSS and JavaScript
+├── index.html              # Main HTML file
+├── styles.css              # CSS styles
+├── script.js               # JavaScript functionality
 ├── data/                   # Markdown files directory
 │   ├── Davis, Miles.md
 │   ├── Coltrane, John.md
