@@ -1,6 +1,6 @@
 # Music Graph Visualizer
 
-A web-based tool for visualizing connections between musical artists and albums using an interactive graph. The tool reads structured markdown files and creates a dynamic, zoomable, and draggable graph visualization.
+A web-based tool for visualizing connections between musical artists and albums using an interactive graph. The tool automatically loads structured markdown files from a `/data/` directory and creates a dynamic, zoomable, and draggable graph visualization.
 
 ## Features
 
@@ -8,34 +8,21 @@ A web-based tool for visualizing connections between musical artists and albums 
 - **Color-coded Relationships**:
   - 🔵 Blue edges: Artist played on album
   - 🟣 Purple edges: Album samples another album
-  - 🟢 Green edges: Album covers another album
 - **Node Types**: Different visual styles for artists (smaller circles) and albums (larger circles)
-- **Hover Tooltips**: Detailed information about artists and albums
-- **File Input**: Load multiple markdown files from a directory
+- **Automatic Data Loading**: Automatically loads markdown files from the `/data/` directory
+- **Force-directed Layout**: Uses D3.js force simulation for natural node positioning
 
 ## Usage
 
-1. Open `index.html` in a web browser
-2. Click "Load Markdown Files" and select a directory containing `.md` files
-3. The graph will automatically generate and display the relationships
+1. Place your markdown files in the `/data/` directory
+2. Open `simple-music-graph.html` in a web browser
+3. The graph will automatically load and display the relationships
 4. Use mouse to zoom, pan, and drag nodes
-5. Hover over nodes to see detailed information
+5. The graph uses a force-directed layout that settles into a natural arrangement
 
 ## Markdown File Format
 
-### Artist Files
-```markdown
-# Artist: [Artist Name]
-
-**Name:** [Artist Name]
-**Instruments:** [Instrument 1, Instrument 2, ...]
-**Genre:** [Genre]
-**Bio:** [Brief biography]
-
-## Relationships
-
-[Artist Name] played on [Album Title]
-```
+The tool uses a MusicDB format with specific sections for relationships. Files are automatically detected as albums or artists based on their content.
 
 ### Album Files
 ```markdown
@@ -47,28 +34,42 @@ A web-based tool for visualizing connections between musical artists and albums 
 **Artists:** [Artist 1, Artist 2, ...]
 **Description:** [Album description]
 
-## Relationships
+## Artists
 
-[Album Title] samples [Other Album Title]
-[Album Title] covers [Other Album Title]
+- [[Artist Name 1]]
+- [[Artist Name 2]]
+
+## Samples
+
+- [[Sampled Album Name 1]]
+- [[Sampled Album Name 2]]
+```
+
+### Artist Files
+```markdown
+# Artist: [Artist Name]
+
+**Name:** [Artist Name]
+**Instruments:** [Instrument 1, Instrument 2, ...]
+**Genre:** [Genre]
+**Bio:** [Brief biography]
 ```
 
 ## Relationship Types
 
 The parser recognizes these relationship patterns:
 
-- **Artist-Album**: `[Artist] played on [Album]` or `[Album] features [Artist]`
-- **Sampling**: `[Album A] samples [Album B]` or `[Album A] sampled by [Album B]`
-- **Covering**: `[Album A] covers [Album B]` or `[Album A] covered by [Album B]`
+- **Artist-Album**: Links are created when an album's `Artists` section contains `[[Artist Name]]`
+- **Sampling**: Links are created when an album's `Samples` section contains `[[Album Name]]`
 
 ## Example Files
 
-The `examples/` directory contains sample markdown files demonstrating the format:
-- `miles-davis.md` - Artist file
-- `john-coltrane.md` - Artist file
-- `kind-of-blue.md` - Album file
-- `giant-steps.md` - Album file
-- `a-love-supreme.md` - Album file
+The `data/` directory contains sample markdown files demonstrating the format:
+- `Davis, Miles.md` - Artist file
+- `Coltrane, John.md` - Artist file
+- `Kind of Blue.md` - Album file
+- `Illmatic.md` - Album file
+- `Stakes Is High.md` - Album file
 
 ## Technical Details
 
@@ -87,16 +88,13 @@ The `examples/` directory contains sample markdown files demonstrating the forma
 
 ```
 music-web/
-├── index.html              # Main HTML file
-├── styles.css              # CSS styles
-├── main.js                 # Main application logic
-├── markdown-parser.js      # Markdown parsing functionality
-├── graph-visualizer.js     # D3.js graph visualization
-├── examples/               # Sample markdown files
-│   ├── miles-davis.md
-│   ├── john-coltrane.md
-│   ├── kind-of-blue.md
-│   ├── giant-steps.md
-│   └── a-love-supreme.md
+├── simple-music-graph.html # Main HTML file with embedded CSS and JavaScript
+├── data/                   # Markdown files directory
+│   ├── Davis, Miles.md
+│   ├── Coltrane, John.md
+│   ├── Kind of Blue.md
+│   ├── Illmatic.md
+│   ├── Stakes Is High.md
+│   └── ... (other artist and album files)
 └── README.md               # This file
 ```
